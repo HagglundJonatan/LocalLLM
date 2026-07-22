@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama:/root/.ollama
+      - ./modelfiles:/modelfiles
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=3
+    tty: true
+    pull_policy: always
+    networks:
+      - llm-network
+    devices:
+      # kfd and dri device access needed for AMDGPU ROCm support to work
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - 3000:8080
+    depends_on:
+      - ollama
+    volumes:
+      - open-webui:/app/backend/data
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - llm-network
+    restart: unless-stopped
+
+volumes:
+  ollama: {}
+  open-webui: {}
+
+networks:
+  llm-network:
+    driver: bridge

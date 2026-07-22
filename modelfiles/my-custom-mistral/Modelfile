@@ -1,0 +1,12 @@
+# modelfiles/my-custom-mistral/Modelfile
+FROM mistral
+
+# Set parameters
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER top_k 40
+
+# Set a custom system prompt
+SYSTEM """You are a helpful AI assistant specialized in explaining technical concepts clearly and concisely.
+Always provide practical examples when explaining something.
+"""
