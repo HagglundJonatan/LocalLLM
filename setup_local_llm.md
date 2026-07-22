@@ -1,3 +1,5 @@
+# Setup Local LLM with docker compose, Ollama, web ui and Continue VS Code Extension
+
 1. Install docker compose
 
 2. Create a docker-compose.yaml :
